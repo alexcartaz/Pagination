@@ -4,7 +4,7 @@ FSJS Project 2 - Data Pagination and Filtering
 */
 let itemsPerPage = 9;
 
-//takes any number of document.elements (>1) and makes the siblings of a parent element in the order provided
+//takes any number of document.elements (>1) and makes the first firstChild and any subsequent elements siblings
 function createSiblings(parent, siblings){
    //must be at least 2 siblings
    let last = siblings.length-1;
@@ -16,6 +16,7 @@ function createSiblings(parent, siblings){
 }
 
 //creates a document HTML element of type, with classes, and properties
+//if no classes or props needed, a boolean of false can be entered
 function createElement(type, classes, props){
    let element = document.createElement(type);
    if(classes){
@@ -187,7 +188,7 @@ function addSearch(data){
    //init HTML
    let searchContainer = document.querySelector("h2");
 
-   //init block
+   //init HTML element block as specificed by requirements
    let label = createElement('label', ['student-search'], {
       for: 'search'
    });
@@ -210,7 +211,7 @@ function addSearch(data){
       alt: "search icon"
    });
 
-   //assign relations
+   //assign element relations
    button.appendChild(img);
    createSiblings(label, [span, input, button]);
    searchContainer.appendChild(label);
@@ -229,6 +230,14 @@ function addSearch(data){
       }
    }
 
+   //this function is called whenever a user performs an action that could trigger a new search
+   //ie modifying the search text or clicking the search icon
+   //this function (1) runs a search with new search results and 
+   //(2) if the total results (list of students) is differen than the previous list
+   //it resets the results displayed and sets the current pagination back to page 1
+   // note: a more optimal way to do this would be to store the last 5-10 searchTexts and searchResults arrays
+   // and not actually parse the data file unless the search was not run previously
+   // this would also prevent function spam if someone clicked the search icon repeatidly very fast
    function runSearch(){
       newSearchResults = getSearchResults();
       if(newSearchResults != prevSearchResults){
